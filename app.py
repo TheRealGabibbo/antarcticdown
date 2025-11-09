@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from yt_dlp import YoutubeDL
@@ -42,8 +43,6 @@ def download_video():
 def health_check():
     return jsonify({'status': 'healthy', 'service': 'antarcticdown'})
 
-if __name__ == '__main__':
-    print("🐧 AntarcticDown Backend Started!")
-    print("📍 http://localhost:5000")
-    print("⚠️  Keep this window open!")
-    app.run(host='0.0.0.0', port=5000, debug=False)
+f __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
