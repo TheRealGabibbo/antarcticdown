@@ -17,13 +17,12 @@ def download_video():
         
         # Configurazione robusta
 ydl_opts = {
-    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best[ext=mp4]/best',
+    'format': 'best[ext=mp4]/best[ext=webm]/best',
     'quiet': True,
     'no_warnings': True,
     'socket_timeout': 30,
 }
-        }
-        
+
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
