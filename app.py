@@ -42,7 +42,20 @@ def download_video():
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy', 'service': 'antarcticdown'})
+ 
+@app.route('/')
+def home():
+    return jsonify({
+        'service': 'AntarcticDown',
+        'status': 'healthy', 
+        'version': '1.0',
+        'message': 'Video downloader backend is running!',
+        'endpoints': {
+            'download': '/download?url=YOUTUBE_URL',
+            'health': '/health'
+        }
+    }) 
 
-if __name__ == '__main__':  # ✅ CORRETTO - "if" invece di "f"
+if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
