@@ -1,0 +1,49 @@
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from yt_dlp import YoutubeDL
+import logging
+
+app = Flask(__name__)
+CORS(app)
+logging.basicConfig(level=logging.INFO)
+
+@app.route('/download', methods=['GET'])
+def download_video():
+    try:
+        url = request.args.get('url')
+        if not url:
+            return jsonify({'error': 'Missing URL'}), 400
+        
+        # Configurazione robusta
+        ydl_opts = {
+            'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+            'quiet': True,
+            'no_warnings': True,
+            'socket_timeout': 30,
+        }
+        
+        with YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            
+            if 'url' not in info:
+                return jsonify({'error': 'No downloadable URL found'}), 404
+            
+            return jsonify({
+                'download_url': info['url'],
+                'title': info.get('title', 'Unknown'),
+                'duration': info.get('duration', 0)
+            })
+            
+    except Exception as e:
+        logging.error(f"Error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy', 'service': 'antarcticdown'})
+
+if __name__ == '__main__':
+    print("🐧 AntarcticDown Backend Started!")
+    print("📍 http://localhost:5000")
+    print("⚠️  Keep this window open!")
+    app.run(host='0.0.0.0', port=5000, debug=False)
