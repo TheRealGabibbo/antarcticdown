@@ -11,37 +11,37 @@ logging.basicConfig(level=logging.INFO)
 @app.route('/download', methods=['GET'])
 def download_video():
     try:
-    url = request.args.get('url')
-    if not url:
-        return jsonify({'error': 'Missing URL'}), 400
-    
-    ydl_opts = {
-        'format': 'best[ext=mp4]/best[ext=webm]/best',
-        'quiet': True,
-        'no_warnings': True,
-        'socket_timeout': 30,
-    }
-    
-    with YoutubeDL(ydl_opts) as ydl:
-        info = ydl.extract_info(url, download=False)
+        url = request.args.get('url')
+        if not url:
+            return jsonify({'error': 'Missing URL'}), 400
         
-        if 'url' not in info:
-            return jsonify({'error': 'No downloadable URL found'}), 404
+        ydl_opts = {
+            'format': 'best[ext=mp4]/best[ext=webm]/best',
+            'quiet': True,
+            'no_warnings': True,
+            'socket_timeout': 30,
+        }
         
-        return jsonify({
-            'download_url': info['url'],
-            'title': info.get('title', 'Unknown'),
-            'duration': info.get('duration', 0)
-        })
-        
-except Exception as e:
-    logging.error(f"Error: {str(e)}")
-    return jsonify({'error': str(e)}), 500
+        with YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            
+            if 'url' not in info:
+                return jsonify({'error': 'No downloadable URL found'}), 404
+            
+            return jsonify({
+                'download_url': info['url'],
+                'title': info.get('title', 'Unknown'),
+                'duration': info.get('duration', 0)
+            })
+            
+    except Exception as e:
+        logging.error(f"Error: {str(e)}")
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/health', methods=['GET'])
 def health_check():
     return jsonify({'status': 'healthy', 'service': 'antarcticdown'})
- 
+
 @app.route('/')
 def home():
     return jsonify({
@@ -53,7 +53,7 @@ def home():
             'download': '/download?url=YOUTUBE_URL',
             'health': '/health'
         }
-    }) 
+    })
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
