@@ -15,22 +15,22 @@ def download_video():
         if not url:
             return jsonify({'error': 'Missing URL'}), 400
         
+        # CONFIGURAZIONE SEMPLICE E FUNZIONANTE
         ydl_opts = {
-            'format': 'bestvideo+bestaudio/best',
-            'merge_output_format': 'mp4',
+            'format': 'best',
             'quiet': True,
-            'no_warnings': True,
-            'socket_timeout': 30,
         }
         
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
-            if 'url' not in info:
-                return jsonify({'error': 'No downloadable URL found'}), 404
+            # VERIFICA che sia un URL video vero
+            video_url = info['url']
+            if 'googlevideo.com' not in video_url:
+                return jsonify({'error': 'Invalid video URL extracted'}), 500
             
             return jsonify({
-                'download_url': info['url'],
+                'download_url': video_url,
                 'title': info.get('title', 'Unknown'),
                 'duration': info.get('duration', 0)
             })
@@ -48,12 +48,7 @@ def home():
     return jsonify({
         'service': 'AntarcticDown',
         'status': 'healthy', 
-        'version': '1.0',
-        'message': 'Video downloader backend is running!',
-        'endpoints': {
-            'download': '/download?url=YOUTUBE_URL',
-            'health': '/health'
-        }
+        'version': '1.0'
     })
 
 if __name__ == '__main__':
