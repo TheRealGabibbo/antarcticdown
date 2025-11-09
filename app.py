@@ -15,12 +15,12 @@ def download_video():
         if not url:
             return jsonify({'error': 'Missing URL'}), 400
         
-        ydl_opts = {
-            'format': 'best[ext=mp4]/best[ext=webm]/best',
-            'quiet': True,
-            'no_warnings': True,
-            'socket_timeout': 30,
-        }
+ydl_opts = {
+    'format': 'mp4/bestvideo+bestaudio',
+    'quiet': True,
+    'no_warnings': True,
+    'socket_timeout': 30,
+}
         
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
