@@ -43,6 +43,6 @@ def download_video():
 def health_check():
     return jsonify({'status': 'healthy', 'service': 'antarcticdown'})
 
-f __name__ == '__main__':
+if __name__ == '__main__':  # ✅ CORRETTO - "if" invece di "f"
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
